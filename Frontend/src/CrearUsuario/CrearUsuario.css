@@ -1,0 +1,88 @@
+/* Estilos del formulario */
+.container {
+    background-color: white;
+    /* Fondo blanco */
+    border-radius: 10px;
+    /* Bordes redondeados */
+    padding: 20px;
+    /* Padding general para todo el contenedor */
+    max-width: 400px;
+    /* Ancho máximo más pequeño para dispositivos grandes */
+    width: 100%;
+    /* Asegúrate de que el contenedor ocupe el 100% del ancho disponible */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
+    margin: 80px auto;
+    /* Centrar el contenedor y agregar margen superior */
+}
+
+/* Ajustes para dispositivos móviles */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        /* Ajustar el padding en pantallas más pequeñas */
+        margin: 20px;
+        /* Reducir margen superior en dispositivos móviles */
+    }
+}
+
+/* Espaciado para labels */
+.form-label {
+    margin-bottom: 5px;
+    /* Añadir margen inferior para separar el label del input */
+    display: block;
+    /* Asegura que el label ocupe todo el ancho disponible */
+}
+
+/* Ajuste de padding para inputs */
+.form-control {
+    width: 100%;
+    /* Asegura que todos los inputs ocupen el ancho completo */
+    box-sizing: border-box;
+    /* Incluye padding y borde en el ancho total */
+    padding: 10px;
+    /* Añadir padding para que el texto no toque el borde del input */
+}
+
+/* Asegúrate de que el título esté centrado */
+h2 {
+    text-align: center;
+    /* Centrar el título */
+    margin-bottom: 20px;
+    font-family: 'Quicksand', sans-serif;
+    /* Usa una fuente moderna */
+    font-weight: bold;
+}
+
+/* Añadir margen a la navbar si es necesario */
+.navbar {
+    margin-bottom: 20px;
+    /* Espacio entre la navbar y el formulario */
+    z-index: 10;
+    /* Asegura que la navbar esté encima de otros elementos */
+}
+
+/* Centrar el botón en el formulario */
+.btn-success {
+    display: block;
+    /* Hacer que el botón se comporte como un bloque */
+    margin: 20px auto 0;
+    /* Margen automático a los lados para centrar */
+    width: auto;
+    /* Ancho automático */
+    max-width: 200px;
+    /* Ancho máximo del botón */
+}
+
+/* Espaciado adicional para el contenedor en dispositivos móviles */
+@media (max-width: 768px) {
+    .form-label {
+        margin: 10px 0;
+        /* Añadir margen superior e inferior para más separación */
+    }
+
+    .container {
+        padding: 20px;
+        /* Mayor padding en dispositivos móviles */
+    }
+}
