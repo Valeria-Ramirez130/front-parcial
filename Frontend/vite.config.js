@@ -3,13 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  // No necesitas el proxy si vas a usar la URL de Vercel directamente
   server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000', // La URL donde corre tu backend
-        changeOrigin: true, // Cambia el origen de la solicitud al destino
-        secure: false, // Si estás usando HTTP sin SSL
-      },
-    },
+    // Puedes eliminar la configuración de proxy aquí
   },
+  // Si necesitas la configuración del build, puedes agregarla aquí
 })
