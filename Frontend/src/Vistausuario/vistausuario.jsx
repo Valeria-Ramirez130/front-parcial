@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const VistaUsuario = () => {
     const [codigo, setCodigo] = useState('');
     const [userId, setUserId] = useState(null);
     const [mensaje, setMensaje] = useState('');
     const [codigosRegistrados, setCodigosRegistrados] = useState([]);
-    const navigate = useNavigate(); // Inicializa useNavigate
+    const navigate = useNavigate();
 
     useEffect(() => {
         const id = localStorage.getItem('userId');
@@ -20,7 +20,8 @@ const VistaUsuario = () => {
 
     const obtenerCodigos = async (id) => {
         try {
-            const response = await axios.get(`/api/codigos/obtenerCodigosUsuario/${id}`);
+            // Usa la variable de entorno para la URL del backend
+            const response = await axios.get(`${import.meta.env.VITE_BACK_URL}/api/codigos/obtenerCodigosUsuario/${id}`);
             setCodigosRegistrados(response.data);
         } catch (error) {
             console.error('Error al obtener códigos:', error);
@@ -42,7 +43,8 @@ const VistaUsuario = () => {
         }
 
         try {
-            const response = await axios.post('/api/codigos/verificarCodigo', { codigo, userId });
+            // Usa la variable de entorno para la URL del backend
+            const response = await axios.post(`${import.meta.env.VITE_BACK_URL}/api/codigos/verificarCodigo`, { codigo, userId });
             setMensaje(response.data.message);
             await obtenerCodigos(userId);
         } catch (error) {

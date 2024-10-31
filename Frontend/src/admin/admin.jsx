@@ -11,7 +11,7 @@ const UsuariosAdmin = () => {
     useEffect(() => {
         const fetchUsuarios = async () => {
             try {
-                const response = await axios.get('/api/admin/usuarios');
+                const response = await axios.get(`${import.meta.env.VITE_BACK_URL}/api/admin/usuarios`);
                 setUsuarios(response.data);
             } catch (error) {
                 console.error("Error al obtener usuarios:", error);
@@ -20,7 +20,7 @@ const UsuariosAdmin = () => {
 
         const fetchGanadores = async () => {
             try {
-                const response = await axios.get('/api/admin/usuariosGanadores');
+                const response = await axios.get(`${import.meta.env.VITE_BACK_URL}/api/admin/usuariosGanadores`);
                 setGanadores(response.data);
             } catch (error) {
                 console.error("Error al obtener usuarios ganadores:", error);

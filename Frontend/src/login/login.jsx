@@ -9,11 +9,12 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const iniciarSesion = (e) => {
+    const iniciarSesion = async (e) => {
         e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
 
+        // Validación básica de campos vacíos
         if (!email || !contrasena) {
-            alert('Todos los campos son obligatorios.');
+            setError('Todos los campos son obligatorios.');
             return;
         }
 
@@ -21,41 +22,38 @@ function Login() {
         setLoading(true);
         setError('');
 
-        axios
-            .post(`${import.meta.env.VITE_BACK_URL}/api/usuario/login`, usuario)
-            .then((res) => {
-                const { userId, message, rol } = res.data; // Asegúrate de que 'userId' está en la respuesta
-                alert(message);
+        try {
+            const res = await axios.post(`${import.meta.env.VITE_BACK_URL}/api/usuario/login`, usuario);
+            const { userId, message, rol } = res.data; // Asegúrate de que 'userId' está en la respuesta
+            alert(message);
 
-                // Guarda el ID de usuario en localStorage
-                localStorage.setItem('userId', userId);
+            // Guarda el ID de usuario en localStorage
+            localStorage.setItem('userId', userId);
 
-                // Redirigir según el rol
-                if (rol === 'cliente' || rol === 'usuario') {
-                    navigate('/vistaUsuario');
-                } else if (rol === 'administrador') {
-                    navigate('/admin');
-                } else {
-                    alert('Rol no reconocido');
-                }
-            })
-            .catch((err) => {
-                console.error('Error al iniciar sesión:', err);
-                if (err.response && err.response.data) {
-                    setError(err.response.data.message); // Mensaje de error desde el servidor
-                } else {
-                    setError('Error en el servidor'); // Mensaje genérico en caso de error
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            // Redirigir según el rol
+            if (rol === 'cliente' || rol === 'usuario') {
+                navigate('/vistaUsuario');
+            } else if (rol === 'administrador') {
+                navigate('/admin');
+            } else {
+                setError('Rol no reconocido');
+            }
+        } catch (err) {
+            console.error('Error al iniciar sesión:', err);
+            if (err.response && err.response.data) {
+                setError(err.response.data.message); // Mensaje de error desde el servidor
+            } else {
+                setError('Error en el servidor'); // Mensaje genérico en caso de error
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className='container'>
             <h2 className='mt-4'>Iniciar Sesión</h2>
-            <form onSubmit={iniciarSesion}> {/* Se añadió onSubmit aquí */}
+            <form onSubmit={iniciarSesion}>
                 <div className='mb-3'>
                     <label htmlFor='email' className='form-label'>Email</label>
                     <input
@@ -65,6 +63,7 @@ function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder='Email de usuario'
+                        required // Asegura que el campo sea obligatorio
                     />
                 </div>
                 <div className='mb-3'>
@@ -76,12 +75,13 @@ function Login() {
                         value={contrasena}
                         onChange={(e) => setContrasena(e.target.value)}
                         placeholder='Contraseña'
+                        required // Asegura que el campo sea obligatorio
                     />
                 </div>
                 {error && <div className="alert alert-danger">{error}</div>}
                 <div className='d-flex justify-content-between'>
                     <button
-                        type='submit' // Cambiado a 'submit'
+                        type='submit'
                         className='btn btn-primary'
                         disabled={loading}
                     >
