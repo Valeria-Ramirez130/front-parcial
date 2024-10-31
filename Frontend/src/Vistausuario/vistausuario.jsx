@@ -1,20 +1,50 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa el hook useNavigate
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Asegúrate de importar Bootstrap en tu archivo principal.
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 
 const VistaUsuario = () => {
     const [codigo, setCodigo] = useState('');
+    const [userId, setUserId] = useState(null);
     const [mensaje, setMensaje] = useState('');
-    const navigate = useNavigate(); // Inicializa el hook useNavigate
+    const [codigosRegistrados, setCodigosRegistrados] = useState([]);
+    const navigate = useNavigate(); // Inicializa useNavigate
+
+    useEffect(() => {
+        const id = localStorage.getItem('userId');
+        if (id) {
+            setUserId(id);
+            obtenerCodigos(id);
+        }
+    }, []);
+
+    const obtenerCodigos = async (id) => {
+        try {
+            const response = await axios.get(`/api/codigos/obtenerCodigosUsuario/${id}`);
+            setCodigosRegistrados(response.data);
+        } catch (error) {
+            console.error('Error al obtener códigos:', error);
+            setMensaje('Error al obtener los códigos registrados.');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!userId) {
+            setMensaje('No se ha encontrado un ID de usuario. Por favor, inicia sesión nuevamente.');
+            return;
+        }
+
+        if (!codigo.trim()) {
+            setMensaje('Por favor, ingresa un código válido.');
+            return;
+        }
+
         try {
-            const response = await axios.post('/api/codigos/verificarCodigo', { codigo });
-            const { message } = response.data;
-            setMensaje(message);
+            const response = await axios.post('/api/codigos/verificarCodigo', { codigo, userId });
+            setMensaje(response.data.message);
+            await obtenerCodigos(userId);
         } catch (error) {
             if (error.response && error.response.data) {
                 setMensaje(error.response.data.error);
@@ -26,32 +56,40 @@ const VistaUsuario = () => {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center mb-4">Registrar Código</h2>
-            <form onSubmit={handleSubmit} className="shadow p-4 rounded bg-light">
-                <div className="mb-3">
-                    <label htmlFor="codigo" className="form-label">Ingresa tu código:</label>
-                    <input 
-                        type="text" 
-                        id="codigo" 
-                        className="form-control" 
-                        value={codigo} 
-                        onChange={(e) => setCodigo(e.target.value)} 
-                        required 
+            <h1 className="text-center mb-4">Verificar Código</h1>
+            <form onSubmit={handleSubmit} className="mb-4">
+                <div className="input-group">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Ingresa tu código"
+                        value={codigo}
+                        onChange={(e) => setCodigo(e.target.value)}
                     />
+                    <button type="submit" className="btn btn-primary">Verificar</button>
                 </div>
-                <button type="submit" className="btn btn-primary">Registrar Código</button>
             </form>
-            {mensaje && <p className="mt-3 text-center text-danger">{mensaje}</p>}
-
-            {/* Botón para volver a la ruta principal */}
-            <div className="text-center mt-4">
-                <button 
-                    onClick={() => navigate('/')} // Redirige a la ruta principal
-                    className="btn btn-secondary"
-                >
-                    Volver
-                </button>
-            </div>
+            {mensaje && <p className="text-danger">{mensaje}</p>}
+            <h2 className="mt-4">Códigos Registrados</h2>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Fecha de Uso</th>
+                        <th scope="col">Premio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {codigosRegistrados.map((codigo) => (
+                        <tr key={codigo._id}>
+                            <td>{codigo.Codigo}</td>
+                            <td>{codigo.FechaUso ? new Date(codigo.FechaUso).toLocaleString() : 'No utilizado'}</td>
+                            <td>{codigo.TienePremio ? codigo.Premio : 'No ganaste'}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <button onClick={() => navigate('/')} className="btn btn-secondary mt-4">Volver</button>
         </div>
     );
 };

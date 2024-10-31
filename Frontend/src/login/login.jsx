@@ -9,7 +9,9 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const iniciarSesion = () => {
+    const iniciarSesion = (e) => {
+        e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+
         if (!email || !contrasena) {
             alert('Todos los campos son obligatorios.');
             return;
@@ -22,8 +24,11 @@ function Login() {
         axios
             .post(`${import.meta.env.VITE_BACK_URL}/api/usuario/login`, usuario)
             .then((res) => {
-                const { message, rol } = res.data;
+                const { userId, message, rol } = res.data; // Asegúrate de que 'userId' está en la respuesta
                 alert(message);
+
+                // Guarda el ID de usuario en localStorage
+                localStorage.setItem('userId', userId);
 
                 // Redirigir según el rol
                 if (rol === 'cliente' || rol === 'usuario') {
@@ -50,7 +55,7 @@ function Login() {
     return (
         <div className='container'>
             <h2 className='mt-4'>Iniciar Sesión</h2>
-            <form>
+            <form onSubmit={iniciarSesion}> {/* Se añadió onSubmit aquí */}
                 <div className='mb-3'>
                     <label htmlFor='email' className='form-label'>Email</label>
                     <input
@@ -76,8 +81,7 @@ function Login() {
                 {error && <div className="alert alert-danger">{error}</div>}
                 <div className='d-flex justify-content-between'>
                     <button
-                        type='button'
-                        onClick={iniciarSesion}
+                        type='submit' // Cambiado a 'submit'
                         className='btn btn-primary'
                         disabled={loading}
                     >

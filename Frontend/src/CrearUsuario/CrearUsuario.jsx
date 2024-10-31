@@ -184,22 +184,24 @@ function CrearUsuario() {
                     </div>
                 </div>
 
-                <button
-                    type="button"
-                    onClick={agregarUsuario}
-                    className='btn btn-success'
-                    disabled={loading} // Deshabilita el botón mientras se realiza la solicitud
-                >
-                    {loading ? 'Guardando...' : 'Guardar Usuario'}
-                </button>
-                {/* Botón de Registrarse */}
-                <button
-                        type='button'
-                        onClick={() => navigate('/')}
-                        className='btn btn-secondary'
-                    >
-                        Volver
-                    </button>
+                <div className="button-group">
+    <button
+        type="button"
+        onClick={agregarUsuario}
+        className='btn btn-success'
+        disabled={loading} // Deshabilita el botón mientras se realiza la solicitud
+    >
+        {loading ? 'Guardando...' : 'Guardar Usuario'}
+    </button>
+    <button
+        type='button'
+        onClick={() => navigate('/')}
+        className='btn btn-secondary'
+    >
+        Volver
+    </button>
+</div>
+
             </form>
         </div>
     );
